@@ -18,6 +18,7 @@ func SetupRouter() *gin.Engine {
             productRoutes.GET("/:id", controllers.GetProductByID)
             productRoutes.PUT("/:id", controllers.UpdateProduct)
             productRoutes.DELETE("/:id", controllers.DeleteProduct)
+            productRoutes.POST("/:id/restore", controllers.RestoreProduct)
         }
     }
 
