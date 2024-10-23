@@ -35,7 +35,17 @@ func GetProducts(c *gin.Context) {
 	res := models.Response{Success: true}
 
     var products []models.Product
-    config.DB.Find(&products)
+    q := config.DB.Unscoped()
+
+    isDeleted := c.Query("is_deleted")
+
+    if isDeleted == "1" {
+        q = q.Where("deleted_at IS NOT NULL")
+    } else if isDeleted == "0" {
+        q = q.Where("deleted_at IS NULL")
+    }
+
+    q.Find(&products)
 
 	res.Data = products
 
