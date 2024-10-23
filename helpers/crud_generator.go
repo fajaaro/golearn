@@ -15,6 +15,7 @@ func Create[T any](c *gin.Context) {
 	var entity T
 	if err := c.ShouldBindJSON(&entity); err != nil {
 		err := err.Error()
+		res.Success = false
 		res.Error = &err
 		c.JSON(http.StatusBadRequest, res)
 		return
@@ -22,6 +23,7 @@ func Create[T any](c *gin.Context) {
 
 	if err := config.DB.Create(&entity).Error; err != nil {
 		err := err.Error()
+		res.Success = false
 		res.Error = &err
 		c.JSON(http.StatusInternalServerError, res)
 		return
@@ -46,6 +48,7 @@ func GetAll[T any](c *gin.Context) {
 
 	if err := q.Find(&entities).Error; err != nil {
 		err := err.Error()
+		res.Success = false
 		res.Error = &err
 		c.JSON(http.StatusInternalServerError, res)
 		return
@@ -62,6 +65,7 @@ func GetByID[T any](c *gin.Context) {
 	id := c.Param("id")
 	if err := config.DB.First(&entity, id).Error; err != nil {
 		err := "Entity not found"
+		res.Success = false
 		res.Error = &err
 		c.JSON(http.StatusNotFound, res)
 		return
@@ -79,6 +83,7 @@ func Update[T any](c *gin.Context) {
 
 	if err := config.DB.First(&entity, id).Error; err != nil {
 		err := "Entity not found"
+		res.Success = false
 		res.Error = &err
 		c.JSON(http.StatusNotFound, res)
 		return
@@ -86,6 +91,7 @@ func Update[T any](c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&entity); err != nil {
 		err := err.Error()
+		res.Success = false
 		res.Error = &err
 		c.JSON(http.StatusBadRequest, res)
 		return
@@ -93,6 +99,7 @@ func Update[T any](c *gin.Context) {
 
 	if err := config.DB.Save(&entity).Error; err != nil {
 		err := err.Error()
+		res.Success = false
 		res.Error = &err
 		c.JSON(http.StatusInternalServerError, res)
 		return
@@ -111,6 +118,7 @@ func Delete[T any](c *gin.Context) {
 
     if err := config.DB.Unscoped().First(&entity, id).Error; err != nil {
 		err := "Entity not found"
+		res.Success = false
 		res.Error = &err
         c.JSON(http.StatusNotFound, res)
         return
@@ -142,6 +150,7 @@ func Restore[T any](c *gin.Context) {
 
     if err := config.DB.Unscoped().First(&entity, id).Error; err != nil {
 		err := "Entity not found"
+		res.Success = false
 		res.Error = &err
         c.JSON(http.StatusNotFound, res)
         return
