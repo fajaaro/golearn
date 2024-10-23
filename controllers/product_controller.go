@@ -88,15 +88,27 @@ func DeleteProduct(c *gin.Context) {
 
 	var product models.Product
     id := c.Param("id")
-    if err := config.DB.Delete(&product, id).Error; err != nil {
+
+    if err := config.DB.Unscoped().First(&product, id).Error; err != nil {
 		err := "Product not found"
 		res.Error = &err
         c.JSON(http.StatusNotFound, res)
         return
     }
 
+    var message string
+    if product.DeletedAt.Valid {
+        config.DB.Unscoped().Delete(&product, id)
+
+        message = "Product deleted permanently"
+    } else {
+        config.DB.Delete(&product, id)
+
+        message = "Product deleted successfully"
+    }
+
 	res.Data = map[string]interface{}{
-		"message": "Product deleted successfully",
+		"message": message,
 	}
 
     c.JSON(http.StatusOK, res)
