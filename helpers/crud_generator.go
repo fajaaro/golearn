@@ -135,7 +135,7 @@ func Delete[T any](c *gin.Context) {
         message = "Entity deleted successfully"
     }
 
-	res.Data = map[string]interface{}{
+	res.Data = gin.H{
 		"message": message,
 	}
 
@@ -158,7 +158,7 @@ func Restore[T any](c *gin.Context) {
 
 	config.DB.Unscoped().Model(&entity).Update("deleted_at", nil)
 
-	res.Data = map[string]interface{}{
+	res.Data = gin.H{
 		"message": "Entity restored successfully",
 	}
 

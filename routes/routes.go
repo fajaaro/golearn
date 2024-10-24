@@ -11,6 +11,12 @@ func SetupRouter() *gin.Engine {
 
     api := r.Group("/api")
     {
+        authRoutes := api.Group("/auth")
+        {
+            authRoutes.POST("/register", controllers.Register)
+            authRoutes.POST("/login", controllers.Login)
+        }
+
         productRoutes := api.Group("/products")
         {
             productRoutes.POST("/", controllers.CreateProduct)
