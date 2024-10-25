@@ -15,6 +15,7 @@ func SetupRouter() *gin.Engine {
         {
             authRoutes.POST("/register", controllers.Register)
             authRoutes.POST("/login", controllers.Login)
+            authRoutes.POST("/refresh-token", controllers.RefreshToken)
         }
 
         productRoutes := api.Group("/products")

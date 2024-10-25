@@ -141,3 +141,42 @@ func Login(c *gin.Context) {
 	res.Data = resObj
 	c.JSON(200, res)
 }
+
+func RefreshToken(c *gin.Context) {
+	res := models.Response{Success: true}
+	req := map[string]string{"refresh_token": ""}
+	c.ShouldBindJSON(&req)
+
+	claims, err := DecodeToken(req["refresh_token"])
+	if err != nil {
+		errMsg := err.Error()
+		res.Success = false
+		res.Error = &errMsg
+		c.JSON(http.StatusUnauthorized, res)
+		return
+	}
+
+	_, found := claims["token_type"]
+	if !found || claims["token_type"] != "refresh_token" {
+		msgErr := "Refresh Token is invalid"
+		res.Success = false
+		res.Error = &msgErr
+		c.JSON(http.StatusUnauthorized, res)
+		return
+	}
+
+	accessTokenExpirationTime := time.Now().Add(10*time.Minute)
+	tokenData := gin.H{
+		"token_type": "access_token",
+		"sub": claims["sub"],
+		"iat": time.Now().String(),
+		"exp": accessTokenExpirationTime.String(),
+	}
+	accessToken := GenerateToken(tokenData, accessTokenExpirationTime)
+
+	res.Data = gin.H{
+		"access_token": accessToken,
+	}
+
+	c.JSON(http.StatusOK, res)
+}
