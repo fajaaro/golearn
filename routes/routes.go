@@ -25,6 +25,15 @@ func SetupRouter() *gin.Engine {
         productRoutes.PUT("/:id", controllers.UpdateProduct)
         productRoutes.DELETE("/:id", controllers.DeleteProduct)
         productRoutes.POST("/:id/restore", controllers.RestoreProduct)
+
+        roleRoutes := api.Group("/roles")
+        roleRoutes.Use(middleware.JWTMiddleware())
+        roleRoutes.POST("/", controllers.CreateRole)
+        roleRoutes.GET("/", controllers.GetRoles)
+        roleRoutes.GET("/:id", controllers.GetRoleByID)
+        roleRoutes.PUT("/:id", controllers.UpdateRole)
+        roleRoutes.DELETE("/:id", controllers.DeleteRole)
+        roleRoutes.POST("/:id/restore", controllers.RestoreRole)
     }
 
     return r

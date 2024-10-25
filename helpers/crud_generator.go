@@ -133,7 +133,13 @@ func Delete[T any](c *gin.Context) {
         config.DB.Delete(&entity, id)
 
         message = "Entity deleted successfully"
-    }
+    } else {
+		err := "You must define delete type (param: type, options: permanent / soft delete)"
+		res.Success = false
+		res.Error = &err
+        c.JSON(http.StatusNotFound, res)
+        return
+	}
 
 	res.Data = gin.H{
 		"message": message,
