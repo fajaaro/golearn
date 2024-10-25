@@ -51,6 +51,14 @@ func SetupRouter() *gin.Engine {
         rolePermissionRoutes.GET("/:id", controllers.GetRolePermissionByID)
         rolePermissionRoutes.PUT("/:id", controllers.UpdateRolePermission)
         rolePermissionRoutes.DELETE("/:id", controllers.DeleteRolePermission)
+
+        userPermissionRoutes := api.Group("/user-permissions")
+        userPermissionRoutes.Use(middleware.JWTMiddleware())
+        userPermissionRoutes.POST("/", controllers.CreateUserPermission)
+        userPermissionRoutes.GET("/", controllers.GetUserPermissions)
+        userPermissionRoutes.GET("/:id", controllers.GetUserPermissionByID)
+        userPermissionRoutes.PUT("/:id", controllers.UpdateUserPermission)
+        userPermissionRoutes.DELETE("/:id", controllers.DeleteUserPermission)
     }
 
     return r

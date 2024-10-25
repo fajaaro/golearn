@@ -36,5 +36,6 @@ func ConnectDB() {
 		&models.Role{},
 		&models.Permission{},
 		&models.RolePermission{},
+		&models.UserPermission{},
 	)
 }
