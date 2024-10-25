@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"learn/controllers"
-	"learn/models"
+	"learn/app/controllers"
+	"learn/app/models"
 	"net/http"
 	"strings"
 

@@ -1,7 +1,7 @@
 package config
 
 import (
-	"learn/models"
+	"learn/app/models"
 	"log"
 	"os"
 

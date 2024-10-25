@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"learn/helpers"
-	"learn/models"
+	"learn/app/helpers"
+	"learn/app/models"
 
 	"github.com/gin-gonic/gin"
 )

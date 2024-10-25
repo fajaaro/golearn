@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"fmt"
+	"learn/app/models"
 	"learn/config"
-	"learn/models"
 	"net/http"
 	"os"
 	"strings"

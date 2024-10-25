@@ -1,8 +1,8 @@
 package helpers
 
 import (
+	"learn/app/models"
 	"learn/config"
-	"learn/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

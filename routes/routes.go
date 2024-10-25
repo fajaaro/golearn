@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"learn/controllers"
-	"learn/middleware"
+	"learn/app/controllers"
+	"learn/app/middleware"
 
 	"github.com/gin-gonic/gin"
 )
