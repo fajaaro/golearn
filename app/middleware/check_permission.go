@@ -18,6 +18,7 @@ func CheckPermission(actionType string) gin.HandlerFunc {
 		var permission models.Permission
 		if err := config.DB.Model(&models.Permission{}).Where("name = ?", actionType).First(&permission).Error; err != nil {
 			c.Next()
+			return
 		}
 
 		isAllowed := false
