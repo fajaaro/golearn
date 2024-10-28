@@ -16,11 +16,8 @@ import (
 
 var SECRET = []byte(os.Getenv("SECRET_KEY"))
 
-func GenerateToken(data gin.H, exp time.Time) string {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"token_type": data["token_type"],
-		"exp":        exp.Unix(),
-	})
+func GenerateToken(data jwt.Claims) string {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, data)
 
 	tokenStr, _ := token.SignedString(SECRET)
 
@@ -121,18 +118,18 @@ func Login(c *gin.Context) {
 
 	accessTokenExpirationTime := time.Now().Add(10*time.Minute)
 	refreshTokenExpirationTime := time.Now().AddDate(0, 0, 5)
-	tokenData := gin.H{
+	tokenData := jwt.MapClaims{
 		"token_type": "access_token",
 		"sub": user.ID,
-		"iat": time.Now().String(),
-		"exp": accessTokenExpirationTime.String(),
+		"iat": time.Now().Unix(),
+		"exp": accessTokenExpirationTime.Unix(),
 	}
 
-	accessToken := GenerateToken(tokenData, accessTokenExpirationTime)
+	accessToken := GenerateToken(tokenData)
 	
 	tokenData["token_type"] = "refresh_token"
-	tokenData["exp"] = refreshTokenExpirationTime.String()
-	refreshToken := GenerateToken(tokenData, refreshTokenExpirationTime)
+	tokenData["exp"] = refreshTokenExpirationTime.Unix()
+	refreshToken := GenerateToken(tokenData)
 
 	resObj := gin.H{
 		"access_token":  accessToken,
@@ -166,13 +163,13 @@ func RefreshToken(c *gin.Context) {
 	}
 
 	accessTokenExpirationTime := time.Now().Add(10*time.Minute)
-	tokenData := gin.H{
+	tokenData := jwt.MapClaims{
 		"token_type": "access_token",
 		"sub": claims["sub"],
-		"iat": time.Now().String(),
-		"exp": accessTokenExpirationTime.String(),
+		"iat": time.Now().Unix(),
+		"exp": accessTokenExpirationTime.Unix(),
 	}
-	accessToken := GenerateToken(tokenData, accessTokenExpirationTime)
+	accessToken := GenerateToken(tokenData)
 
 	res.Data = gin.H{
 		"access_token": accessToken,
