@@ -19,12 +19,12 @@ func SetupRouter() *gin.Engine {
 
         productRoutes := api.Group("/products")
         productRoutes.Use(middleware.JWTMiddleware())
-        productRoutes.POST("/", controllers.CreateProduct)
-        productRoutes.GET("/", controllers.GetProducts)
-        productRoutes.GET("/:id", controllers.GetProductByID)
-        productRoutes.PUT("/:id", controllers.UpdateProduct)
-        productRoutes.DELETE("/:id", controllers.DeleteProduct)
-        productRoutes.POST("/:id/restore", controllers.RestoreProduct)
+        productRoutes.POST("/", middleware.CheckPermission("create product"), controllers.CreateProduct)
+        productRoutes.GET("/", middleware.CheckPermission("view product"), controllers.GetProducts)
+        productRoutes.GET("/:id", middleware.CheckPermission("view product"), controllers.GetProductByID)
+        productRoutes.PUT("/:id", middleware.CheckPermission("update product"), controllers.UpdateProduct)
+        productRoutes.DELETE("/:id", middleware.CheckPermission("delete product"), controllers.DeleteProduct)
+        productRoutes.POST("/:id/restore", middleware.CheckPermission("restore product"), controllers.RestoreProduct)
 
         roleRoutes := api.Group("/roles")
         roleRoutes.Use(middleware.JWTMiddleware())

@@ -3,6 +3,7 @@ package middleware
 import (
 	"learn/app/controllers"
 	"learn/app/models"
+	"learn/config"
 	"net/http"
 	"strings"
 
@@ -43,6 +44,18 @@ func JWTMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		var user models.User
+		if err := config.DB.Where("id = ?", claims["sub"]).First(&user).Error; err != nil {
+			errMsg := "Invalid token user " + claims["sub"].(string)
+			res.Success = false
+			res.Error = &errMsg
+			c.JSON(http.StatusUnauthorized, res)
+			c.Abort()
+			return
+		}
+
+		c.Set("user", user)
+	
 		c.Next()
 	}
 }
