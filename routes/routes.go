@@ -37,6 +37,7 @@ func SetupRouter() *gin.Engine {
 
         permissionRoutes := api.Group("/permissions")
         permissionRoutes.Use(middleware.JWTMiddleware())
+        permissionRoutes.Use(middleware.CheckSuperAdmin())
         permissionRoutes.POST("/", controllers.CreatePermission)
         permissionRoutes.GET("/", controllers.GetPermissions)
         permissionRoutes.GET("/:id", controllers.GetPermissionByID)
@@ -46,6 +47,7 @@ func SetupRouter() *gin.Engine {
 
         rolePermissionRoutes := api.Group("/role-permissions")
         rolePermissionRoutes.Use(middleware.JWTMiddleware())
+        rolePermissionRoutes.Use(middleware.CheckSuperAdmin())
         rolePermissionRoutes.POST("/", controllers.CreateRolePermission)
         rolePermissionRoutes.GET("/", controllers.GetRolePermissions)
         rolePermissionRoutes.GET("/:id", controllers.GetRolePermissionByID)
@@ -54,6 +56,7 @@ func SetupRouter() *gin.Engine {
 
         userPermissionRoutes := api.Group("/user-permissions")
         userPermissionRoutes.Use(middleware.JWTMiddleware())
+        userPermissionRoutes.Use(middleware.CheckSuperAdmin())
         userPermissionRoutes.POST("/", controllers.CreateUserPermission)
         userPermissionRoutes.GET("/", controllers.GetUserPermissions)
         userPermissionRoutes.GET("/:id", controllers.GetUserPermissionByID)
@@ -62,6 +65,7 @@ func SetupRouter() *gin.Engine {
 
         userRoleRoutes := api.Group("/user-roles")
         userRoleRoutes.Use(middleware.JWTMiddleware())
+        userRoleRoutes.Use(middleware.CheckSuperAdmin())
         userRoleRoutes.POST("/", controllers.CreateUserRole)
         userRoleRoutes.GET("/", controllers.GetUserRoles)
         userRoleRoutes.GET("/:id", controllers.GetUserRoleByID)
