@@ -84,12 +84,13 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	appName := os.Getenv("APP_NAME")
-	to := []string{entity.Email}
-	subject := appName + " Registration"
-	body := "You have successfully registered to " + appName + " application."
-
-	_ = helpers.SendEmail(to, subject, body)
+	go func(email string) {
+		appName := os.Getenv("APP_NAME")
+		to := []string{email}
+		subject := appName + " Registration"
+		body := "You have successfully registered to " + appName + " application."
+		_ = helpers.SendEmail(to, subject, body)
+	}(entity.Email)
 
 	res.Data = entity
 	c.JSON(http.StatusOK, res)
