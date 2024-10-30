@@ -1,3 +1,8 @@
 /tmp
+
 .env
+
 /storage/logs/go.log
+
+/storage/app/public/*
+!/storage/app/public/.gitkeep

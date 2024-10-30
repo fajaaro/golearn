@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"errors"
 	"learn/app/models"
 	"learn/config"
 	"net/http"
@@ -12,14 +13,26 @@ import (
 func Create[T any](c *gin.Context) {
 	res := models.Response{Success: true}
 
+	contentType := Explode(";", c.Request.Header.Get("Content-Type"))[0]
+
 	var entity T
-	if err := c.ShouldBindJSON(&entity); err != nil {
-		err := err.Error()
+	var err error
+
+	if contentType == "application/json" {
+		err = c.ShouldBindJSON(&entity);
+	} else if contentType == "multipart/form-data" {
+		err = c.Bind(&entity)
+	} else {
+		err = errors.New("unsupported content type")
+	}
+
+	if err != nil {
+		err := "Error parsing data: " + err.Error()
 		res.Success = false
 		res.Error = &err
 		c.JSON(http.StatusBadRequest, res)
 		return
-	}
+	}	
 
 	if err := config.DB.Create(&entity).Error; err != nil {
 		err := err.Error()

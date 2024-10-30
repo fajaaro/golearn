@@ -9,6 +9,8 @@ import (
 
 func SetupRouter() *gin.Engine {
     r := gin.Default()
+    r.StaticFS("/storage", gin.Dir("storage/app/public", false))
+
 
     api := r.Group("/api")
     {

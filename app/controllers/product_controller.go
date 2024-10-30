@@ -3,12 +3,41 @@ package controllers
 import (
 	"learn/app/helpers"
 	"learn/app/models"
+	"learn/config"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func CreateProduct(c *gin.Context) {
-    helpers.Create[models.Product](c)
+    res := models.Response{Success: true}
+
+	var entity models.Product
+	if err := c.Bind(&entity); err != nil {
+		err := "Error parsing data: " + err.Error()
+		res.Success = false
+		res.Error = &err
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}	
+
+    form, _ := c.MultipartForm()
+    image := form.File["image"][0]
+    filepath, err := helpers.UploadFile(c, image, "products")
+    if err == nil {
+        entity.ImagePath = filepath
+    }
+
+	if err := config.DB.Create(&entity).Error; err != nil {
+		err := err.Error()
+		res.Success = false
+		res.Error = &err
+		c.JSON(http.StatusInternalServerError, res)
+		return
+	}
+
+	res.Data = entity
+	c.JSON(http.StatusOK, res)
 }
 
 func GetProducts(c *gin.Context) {
