@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"learn/app/helpers"
 	"learn/app/models"
 	"learn/config"
 	"net/http"
@@ -82,6 +83,13 @@ func Register(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, res)
 		return
 	}
+
+	appName := os.Getenv("APP_NAME")
+	to := []string{entity.Email}
+	subject := appName + " Registration"
+	body := "You have successfully registered to " + appName + " application."
+
+	_ = helpers.SendEmail(to, subject, body)
 
 	res.Data = entity
 	c.JSON(http.StatusOK, res)

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"mime/multipart"
+	"net/smtp"
 	"os"
 	"path/filepath"
 	"strings"
@@ -47,4 +48,27 @@ func UploadFile(c *gin.Context, file *multipart.FileHeader, folder string) (*str
     }
 
 	return nil, err
+}
+
+func SendEmail(to []string, subject, body string) error {
+	mailHost := os.Getenv("MAIL_HOST")
+	mailPort := os.Getenv("MAIL_PORT")
+	mailUsername := os.Getenv("MAIL_USERNAME")
+	mailPassword := os.Getenv("MAIL_PASSWORD")
+	mailFrom := os.Getenv("MAIL_FROM")
+
+	auth := smtp.PlainAuth("", mailUsername, mailPassword, mailHost)
+
+	msg := "From: " + mailFrom + "\r\n" +
+		"To: " + strings.Join(to, ",") + "\r\n" +
+		"Subject: " + subject + "\r\n\r\n" +
+		body
+
+	smtpAddr := fmt.Sprintf("%s:%s", mailHost, mailPort)
+	err := smtp.SendMail(smtpAddr, auth, mailFrom, to, []byte(msg))
+	if err != nil {
+		return fmt.Errorf("failed to send email: %w", err)
+	}
+
+	return nil
 }
