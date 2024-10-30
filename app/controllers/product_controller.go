@@ -22,10 +22,13 @@ func CreateProduct(c *gin.Context) {
 	}	
 
     form, _ := c.MultipartForm()
-    image := form.File["image"][0]
-    filepath, err := helpers.UploadFile(c, image, "products")
-    if err == nil {
-        entity.ImagePath = filepath
+    images := form.File["image"]
+    if len(images) > 0 {
+        image := images[0]
+        filepath, err := helpers.UploadFile(c, image, "products")
+        if err == nil {
+            entity.ImagePath = filepath
+        }
     }
 
 	if err := config.DB.Create(&entity).Error; err != nil {
