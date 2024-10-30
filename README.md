@@ -3,8 +3,9 @@ If you want to learn Go in the best possible way, this is the best place for you
 To run this project, you can follow these steps:
 1. git clone https://github.com/fajaaro/golearn
 2. cd golearn
-3. go mod tidy
-4. go run main.go
+3. copy .env.example to .env
+4. go mod tidy
+5. go run main.go
 
 With this base code, you can generate simple CRUD API (Get Many, Get One by ID, Store, Update, Delete & Restore) by follow these simple steps:
 1. Create your model
