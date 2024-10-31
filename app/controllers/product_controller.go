@@ -83,7 +83,7 @@ func CreateProduct(c *gin.Context) {
     images := form.File["image"]
     if len(images) > 0 {
         image := images[0]
-        filepath, err := helpers.UploadFile(c, image, "products")
+        filepath, err := helpers.UploadFile(c, image, "private", "products")
         if err == nil {
             entity.ImagePath = filepath
         }

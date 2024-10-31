@@ -6,3 +6,6 @@
 
 /storage/app/public/*
 !/storage/app/public/.gitkeep
+
+/storage/app/*
+!/storage/app/.gitkeep

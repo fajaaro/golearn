@@ -36,8 +36,13 @@ func GenerateRandomString(length int) string {
 	return string(result)
 }
 
-func UploadFile(c *gin.Context, file *multipart.FileHeader, folder string) (*string, error) {
-	directory := fmt.Sprintf("storage/app/public/%s", folder)
+func UploadFile(c *gin.Context, file *multipart.FileHeader, permissionType, folder string) (*string, error) {
+	if permissionType == "private" {
+		permissionType = ""
+	} else {
+		permissionType = "public/"
+	}
+	directory := fmt.Sprintf("storage/app/%s%s", permissionType, folder)
 	fileExtension := filepath.Ext(file.Filename)
 	fileName := fmt.Sprintf("%d-%s%s", time.Now().Unix(), GenerateRandomString(20), fileExtension)
 	filePath := fmt.Sprintf("%s/%s", directory, fileName)
