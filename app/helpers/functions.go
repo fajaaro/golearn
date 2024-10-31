@@ -7,9 +7,12 @@ import (
 	"net/smtp"
 	"os"
 	"path/filepath"
+	"reflect"
+	"strconv"
 	"strings"
 	"time"
 
+	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/gin-gonic/gin"
 )
 
@@ -71,4 +74,38 @@ func SendEmail(to []string, subject, body string) error {
 	}
 
 	return nil
+}
+
+func ReadExcel(file *multipart.FileHeader) ([][]string, error) {
+	fileContent, err := file.Open()
+	if err != nil {
+		return nil, err
+	}
+
+	xlsx, err := excelize.OpenReader(fileContent)
+	if err != nil {
+		return nil, err
+	}
+
+	rows := xlsx.GetRows("Sheet1")
+
+	fileContent.Close()
+
+	return rows, nil
+}
+
+func ExtractModelExcelColIndexes(structType interface{}) map[string]int {
+	result := make(map[string]int)
+	val := reflect.TypeOf(structType)
+
+	for i := 0; i < val.NumField(); i++ {
+		field := val.Field(i)
+		excelTag := field.Tag.Get("excel-col-index")
+		if excelTag != "" {
+			if index, err := strconv.Atoi(excelTag); err == nil {
+				result[field.Name] = index
+			}
+		}
+	}
+	return result
 }

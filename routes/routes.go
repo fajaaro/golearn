@@ -21,6 +21,7 @@ func SetupRouter() *gin.Engine {
 
         productRoutes := api.Group("/products")
         productRoutes.Use(middleware.JWTMiddleware())
+        productRoutes.POST("/import-excel", middleware.CheckPermission("create product"), controllers.ImportExcelProduct)
         productRoutes.POST("/", middleware.CheckPermission("create product"), controllers.CreateProduct)
         productRoutes.GET("/", middleware.CheckPermission("view product"), controllers.GetProducts)
         productRoutes.GET("/:id", middleware.CheckPermission("view product"), controllers.GetProductByID)

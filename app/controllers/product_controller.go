@@ -1,13 +1,71 @@
 package controllers
 
 import (
+	"fmt"
 	"learn/app/helpers"
 	"learn/app/models"
 	"learn/config"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
+
+func ImportExcelProduct(c *gin.Context) {
+    res := models.Response{Success: true}
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		err := err.Error()
+		res.Success = false
+		res.Error = &err
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	rows, err := helpers.ReadExcel(file)
+	if err != nil {
+		err := err.Error()
+		res.Success = false
+		res.Error = &err
+		c.JSON(http.StatusInternalServerError, res)
+		return
+	}
+	var rowsData [][]string
+	if len(rows) > config.Constant.UploadExcelStartFromIndex {
+		rowsData = rows[config.Constant.UploadExcelStartFromIndex:]
+	} else {
+		rowsData = [][]string{}
+	} 
+
+	excelIndex := helpers.ExtractModelExcelColIndexes(models.Product{})
+
+	var errors []string
+	totalInserted := 0
+	for index, row := range rowsData {
+		entity := make(map[string]interface{})	
+		for field, colExcelIndex := range excelIndex {
+			entity[field] = row[colExcelIndex]
+		}
+		entity["CreatedAt"] = time.Now()
+		entity["UpdatedAt"] = time.Now()
+
+		if err := config.DB.Model(&models.Product{}).Create(entity).Error; err != nil {
+			errors = append(errors, fmt.Sprintf("Row %d: %s", index + 4, err.Error()))
+		} else {
+			totalInserted++
+		}
+	}
+	if len(errors) == 0 {
+		errors = []string{}
+	}
+
+	res.Data = map[string]interface{}{
+		"message": fmt.Sprintf("Successfully upload %d product data!", totalInserted),
+		"errors": errors,
+	}
+	c.JSON(http.StatusOK, res)
+}
 
 func CreateProduct(c *gin.Context) {
     res := models.Response{Success: true}
