@@ -2,9 +2,12 @@ package helpers
 
 import (
 	"errors"
+	"fmt"
 	"learn/app/models"
 	"learn/config"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -58,6 +61,27 @@ func GetAll[T any](c *gin.Context) {
 	} else if isDeleted == "0" {
 		q = q.Where("deleted_at IS NULL")
 	}
+
+	page := c.DefaultQuery("page", "1")
+	perPage := c.DefaultQuery("per_page", "10")
+	pageInt, err := strconv.Atoi(page)
+	if err != nil || pageInt < 1 {
+		pageInt = 1
+	}
+	perPageInt, err := strconv.Atoi(perPage)
+	if err != nil || perPageInt < 1 {
+		perPageInt = 10
+	}
+	offset := (pageInt - 1) * perPageInt
+	q = q.Offset(offset).Limit(perPageInt)
+
+	orderBy := c.DefaultQuery("order_by", "id")
+	orderType := c.DefaultQuery("order_type", "asc")
+	orderType = strings.ToLower(orderType)
+	if orderType != "asc" && orderType != "desc" {
+		orderType = "asc"
+	}
+	q = q.Order(fmt.Sprintf("%s %s", orderBy, orderType))
 
 	if err := q.Find(&entities).Error; err != nil {
 		err := err.Error()
