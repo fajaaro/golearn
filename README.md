@@ -13,3 +13,11 @@ With this base code, you can generate simple CRUD API (Get Many, Get One by ID, 
 3. Create your controller by copy-paste from existing controller (for example product_controller). Then modify your controller as needed (you must modify function and model name)
 4. Add routes on routes/routes.go
 5. Done!
+
+Key features to help your development:
+1. Environment variable management (.env)
+2. MVC architecture
+3. Constant variable on config/constants.go
+4. Middleware (JWT, Permission Management like Laravel Spatie, Checking Super Admin)
+5. CRUD Generator (Create, Read, Update, Delete & Import Excel)
+6. Function helpers (Upload file, send email, explode string to array, generate random string, etc)
