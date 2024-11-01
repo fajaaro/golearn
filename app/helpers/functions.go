@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"fmt"
+	"learn/config"
 	"math/rand"
 	"mime/multipart"
 	"net/smtp"
@@ -97,6 +98,17 @@ func ReadExcel(file *multipart.FileHeader) ([][]string, error) {
 	fileContent.Close()
 
 	return rows, nil
+}
+
+func GetExcelRowsData(rows [][]string) [][]string {
+	var rowsData [][]string
+	if len(rows) > config.Constant.UploadExcelStartFromIndex {
+		rowsData = rows[config.Constant.UploadExcelStartFromIndex:]
+	} else {
+		rowsData = [][]string{}
+	} 
+
+	return rowsData
 }
 
 func ExtractModelExcelColIndexes(structType interface{}) map[string]int {

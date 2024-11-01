@@ -12,7 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 func Create[T any](c *gin.Context) {
 	res := models.Response{Success: true}
 

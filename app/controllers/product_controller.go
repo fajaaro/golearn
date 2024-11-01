@@ -12,7 +12,7 @@ import (
 )
 
 func ImportExcelProduct(c *gin.Context) {
-    res := models.Response{Success: true}
+	res := models.Response{Success: true}
 
 	file, err := c.FormFile("file")
 	if err != nil {
@@ -31,12 +31,8 @@ func ImportExcelProduct(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, res)
 		return
 	}
-	var rowsData [][]string
-	if len(rows) > config.Constant.UploadExcelStartFromIndex {
-		rowsData = rows[config.Constant.UploadExcelStartFromIndex:]
-	} else {
-		rowsData = [][]string{}
-	} 
+
+	rowsData := helpers.GetExcelRowsData(rows)
 
 	excelIndex := helpers.ExtractModelExcelColIndexes(models.Product{})
 
@@ -50,7 +46,7 @@ func ImportExcelProduct(c *gin.Context) {
 		entity["CreatedAt"] = time.Now()
 		entity["UpdatedAt"] = time.Now()
 
-		if err := config.DB.Model(&models.Product{}).Create(entity).Error; err != nil {
+		if err := config.DB.Model(models.Product{}).Create(entity).Error; err != nil {
 			errors = append(errors, fmt.Sprintf("Row %d: %s", index + 4, err.Error()))
 		} else {
 			totalInserted++
@@ -60,8 +56,8 @@ func ImportExcelProduct(c *gin.Context) {
 		errors = []string{}
 	}
 
-	res.Data = map[string]interface{}{
-		"message": fmt.Sprintf("Successfully upload %d product data!", totalInserted),
+	res.Data = gin.H{
+		"message": fmt.Sprintf("Successfully upload %d data!", totalInserted),
 		"errors": errors,
 	}
 	c.JSON(http.StatusOK, res)
