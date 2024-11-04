@@ -38,7 +38,7 @@ func GetExcelRowsData(rows [][]string) [][]string {
 	return rowsData
 }
 
-func ExtractModelExcelColIndexes(structType interface{}) map[string]int {
+func ExtractModelExcelColIndexes(structType any) map[string]int {
 	result := make(map[string]int)
 	val := reflect.TypeOf(structType)
 

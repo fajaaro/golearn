@@ -1,7 +1,7 @@
 package models
 
 type Response struct {
-	Success bool        `json:"success"`
-	Data    interface{} `json:"data"`
-	Error   interface{} `json:"error"`
+	Success bool `json:"success"`
+	Data    any  `json:"data"`
+	Error   any  `json:"error"`
 }

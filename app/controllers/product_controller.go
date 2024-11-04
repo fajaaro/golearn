@@ -39,7 +39,7 @@ func ImportExcelProduct(c *gin.Context) {
 	var errors []string
 	totalInserted := 0
 	for index, row := range rowsData {
-		entity := make(map[string]interface{})	
+		entity := make(map[string]any)	
 		for field, colExcelIndex := range excelIndex {
 			entity[field] = row[colExcelIndex]
 		}
